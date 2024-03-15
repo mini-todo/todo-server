@@ -16,7 +16,7 @@ public class LoginService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("인증에 실패 했습니다."));
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(email)

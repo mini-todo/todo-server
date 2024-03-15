@@ -10,6 +10,7 @@ import com.example.todoproject.todo.dto.TodoResponse;
 import com.example.todoproject.todo.dto.TodoUpdateRequest;
 import com.example.todoproject.todo.dto.TypeDto;
 import com.example.todoproject.todo.service.TodoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,7 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping
-    public CommonResponse<TodoResponse> createTodo(@RequestBody TodoCreateRequest todoCreateRequest) {
+    public CommonResponse<TodoResponse> createTodo(@Valid @RequestBody TodoCreateRequest todoCreateRequest) {
         return new CommonResponse<>(todoService.createTodo(todoCreateRequest, getUserName()));
     }
 
@@ -49,13 +50,13 @@ public class TodoController {
     }
 
     @PatchMapping("/{todoId}")
-    public CommonResponse<EmptyDto> updateTodo(@PathVariable("todoId") Long todoId, @RequestBody TodoUpdateRequest todoCreateRequest) {
+    public CommonResponse<EmptyDto> updateTodo(@PathVariable("todoId") Long todoId, @Valid @RequestBody TodoUpdateRequest todoCreateRequest) {
         todoService.updateTodo(todoId, todoCreateRequest);
         return new CommonResponse<>(new EmptyDto());
     }
 
     @PatchMapping("/drag/{todoId}")
-    public CommonResponse<EmptyDto> updateTodoType(@PathVariable("todoId") Long todoId, @RequestBody TypeDto typeDto) {
+    public CommonResponse<EmptyDto> updateTodoType(@PathVariable("todoId") Long todoId, @Valid @RequestBody TypeDto typeDto) {
         todoService.updateType(todoId, typeDto);
         return new CommonResponse<>(new EmptyDto());
     }
@@ -67,7 +68,7 @@ public class TodoController {
     }
 
     @PostMapping("/fixed")
-    public CommonResponse<EmptyDto> createFixedTodo(@RequestBody FixedTodoDto dto) {
+    public CommonResponse<EmptyDto> createFixedTodo(@Valid @RequestBody FixedTodoDto dto) {
         todoService.addFixedTodo(getUserName(), dto);
         return new CommonResponse<>(new EmptyDto());
     }

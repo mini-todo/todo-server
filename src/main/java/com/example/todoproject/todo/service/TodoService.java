@@ -60,7 +60,7 @@ public class TodoService {
 
     public TodoDailyResponse getTodoDetail(String email, Long todoId) {
         Todo todo = todoRepository.findByUserIdAndId(getUserId(email), todoId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("해당 할 일을 찾을 수 없습니다."));
         return new TodoDailyResponse(todo.getId(), todo.getContent(), todo.getDate());
     }
 

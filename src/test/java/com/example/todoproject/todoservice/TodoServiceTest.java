@@ -53,7 +53,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    public void testCreateTodo() {
+    public void createTodoTest() {
         TodoCreateRequest request = new TodoCreateRequest("Test Todo", "2023-12-25", TodoType.DAILY);
 
         TodoResponse response = todoService.createTodo(request, email);
