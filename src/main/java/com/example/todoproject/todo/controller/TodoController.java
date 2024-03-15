@@ -68,7 +68,7 @@ public class TodoController {
 
     @PostMapping("/fixed")
     public CommonResponse<EmptyDto> createFixedTodo(@RequestBody FixedTodoDto dto) {
-        todoService.addFixedTodo(getUserName(), dto);
+        todoService.createFixedTodo(getUserName(), dto);
         return new CommonResponse<>(new EmptyDto());
     }
 
