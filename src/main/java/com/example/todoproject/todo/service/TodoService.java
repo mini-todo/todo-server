@@ -1,5 +1,6 @@
 package com.example.todoproject.todo.service;
 
+import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
 import com.example.todoproject.todo.domain.TodoType;
@@ -30,12 +31,13 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final FixedTodoRepository fixedTodoRepository;
     private final UserRepository userRepository;
+    private final Time time;
 
     @Scheduled(cron = "0 1 0 * * *")
     public void addFixedTodo() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         for (FixedTodo fixedTodo : allFixedTodo) {
-            Todo todo = new Todo(fixedTodo.getContent(), LocalDate.now(), TodoType.DAILY, fixedTodo.getUserId());
+            Todo todo = new Todo(fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId());
             todoRepository.save(todo);
         }
     }
