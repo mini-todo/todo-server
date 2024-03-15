@@ -62,7 +62,7 @@ public class TodoService {
 
     public TodoDailyResponse getTodoDetail(String email, Long todoId) {
         Todo todo = todoRepository.findByUserIdAndId(getUserId(email), todoId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("해당 할일을 찾을 수 없습니다."));
         return new TodoDailyResponse(todo.getId(), todo.getContent(), todo.getDate());
     }
 
@@ -84,7 +84,7 @@ public class TodoService {
     }
 
     @Transactional
-    public void addFixedTodo(String email, FixedTodoDto dto) {
+    public void createFixedTodo(String email, FixedTodoDto dto) {
         FixedTodo fixedTodo = new FixedTodo(dto.content(), getUserId(email));
         fixedTodoRepository.save(fixedTodo);
     }

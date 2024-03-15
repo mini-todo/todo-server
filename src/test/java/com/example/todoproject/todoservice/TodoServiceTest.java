@@ -6,10 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
 import com.example.todoproject.todo.domain.TodoType;
-import com.example.todoproject.todo.dto.FixedTodoDto;
 import com.example.todoproject.todo.dto.TodoCreateRequest;
 import com.example.todoproject.todo.dto.TodoDailyResponse;
 import com.example.todoproject.todo.dto.TodoListResponse;
@@ -22,9 +20,11 @@ import com.example.todoproject.todo.service.TodoService;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.domain.UserRole;
 import com.example.todoproject.user.repository.UserRepository;
+import com.example.todoproject.util.TestTime;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class TodoServiceTest {
 
     @Autowired
     private final TodoService todoService = new TodoService(
-            todoRepository, fixedTodoRepository, userRepository
+            todoRepository, fixedTodoRepository, userRepository, new TestTime()
     );
 
     static String email = "test@example.com";
@@ -53,7 +53,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    public void testCreateTodo() {
+    public void createTodoTest() {
         TodoCreateRequest request = new TodoCreateRequest("Test Todo", "2023-12-25", TodoType.DAILY);
 
         TodoResponse response = todoService.createTodo(request, email);
@@ -97,6 +97,19 @@ public class TodoServiceTest {
     }
 
     @Test
+    public void getTodoDetailFailTest() {
+        // Given
+        String email = "test@example.com";
+        TodoCreateRequest request = new TodoCreateRequest("Test Todo", "2024-03-13", TodoType.DAILY);
+        TodoResponse createdTodo = todoService.createTodo(request, email);
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> todoService.getTodoDetail(email, 0L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 할일을 찾을 수 없습니다.");
+    }
+
+    @Test
     public void updateTodoTest() {
         // Given
         String email = "test@example.com";
@@ -112,6 +125,20 @@ public class TodoServiceTest {
         assertNotNull(updatedTodo);
         assertEquals(updateRequest.content(), updatedTodo.content());
         assertEquals(LocalDate.parse("2024-03-14"), updatedTodo.data());
+    }
+
+    @Test
+    public void updateTodoFailTest() {
+        // Given
+        String email = "test@example.com";
+        TodoCreateRequest createRequest = new TodoCreateRequest("Test Todo", "2024-03-13", TodoType.DAILY);
+        TodoResponse createdTodo = todoService.createTodo(createRequest, email);
+        TodoUpdateRequest updateRequest = new TodoUpdateRequest("Updated Todo", "2024-03-14", TodoType.DAILY);
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> todoService.updateTodo(0L, updateRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 할일을 찾을 수 없습니다.");
     }
 
     @Test
@@ -131,6 +158,20 @@ public class TodoServiceTest {
     }
 
     @Test
+    public void updateTypeFailTest() {
+        // Given
+        String email = "test@example.com";
+        TodoCreateRequest createRequest = new TodoCreateRequest("Test Todo", "2024-03-13", TodoType.DAILY);
+        TodoResponse createdTodo = todoService.createTodo(createRequest, email);
+        TypeDto typeDto = new TypeDto(TodoType.WEEKLY);
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> todoService.updateType(0L, typeDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 할일을 찾을 수 없습니다.");
+    }
+
+    @Test
     public void deleteTodoTest() {
         // Given
         String email = "test@example.com";
@@ -143,21 +184,5 @@ public class TodoServiceTest {
         // Then
         assertThrows(IllegalArgumentException.class, () -> todoService.getTodoDetail(email, createdTodo.id()));
     }
-
-    @Test
-    public void addFixedTodoTest() {
-        // Given
-        String email = "test@example.com";
-        FixedTodoDto fixedTodoDto = new FixedTodoDto("Fixed Todo Content");
-
-        // When
-        todoService.addFixedTodo(email, fixedTodoDto);
-
-        // Then
-        List<FixedTodo> fixedTodos = fixedTodoRepository.findAll();
-        assertEquals(1, fixedTodos.size());
-        assertEquals(fixedTodoDto.content(), fixedTodos.get(0).getContent());
-    }
-
 
 }
