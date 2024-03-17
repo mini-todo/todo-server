@@ -1,5 +1,6 @@
 package com.example.todoproject.todo.service;
 
+import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
 import com.example.todoproject.todo.domain.TodoType;
@@ -30,12 +31,13 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final FixedTodoRepository fixedTodoRepository;
     private final UserRepository userRepository;
+    private final Time time;
 
     @Scheduled(cron = "0 1 0 * * *")
     public void addFixedTodo() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         for (FixedTodo fixedTodo : allFixedTodo) {
-            Todo todo = new Todo(fixedTodo.getContent(), LocalDate.now(), TodoType.DAILY, fixedTodo.getUserId());
+            Todo todo = new Todo(fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId());
             todoRepository.save(todo);
         }
     }
@@ -60,7 +62,7 @@ public class TodoService {
 
     public TodoDailyResponse getTodoDetail(String email, Long todoId) {
         Todo todo = todoRepository.findByUserIdAndId(getUserId(email), todoId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("해당 할일을 찾을 수 없습니다."));
         return new TodoDailyResponse(todo.getId(), todo.getContent(), todo.getDate());
     }
 
@@ -82,7 +84,7 @@ public class TodoService {
     }
 
     @Transactional
-    public void addFixedTodo(String email, FixedTodoDto dto) {
+    public void createFixedTodo(String email, FixedTodoDto dto) {
         FixedTodo fixedTodo = new FixedTodo(dto.content(), getUserId(email));
         fixedTodoRepository.save(fixedTodo);
     }
