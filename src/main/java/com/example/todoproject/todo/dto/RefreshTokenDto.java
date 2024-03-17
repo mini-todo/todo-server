@@ -1,6 +1,6 @@
 package com.example.todoproject.todo.dto;
 
-public record RefreshToken(
+public record RefreshTokenDto(
         String value
 ) {
 }

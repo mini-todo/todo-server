@@ -6,6 +6,8 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.todoproject.common.dto.TokenResponse;
 import com.example.todoproject.common.login.LoginService;
+import com.example.todoproject.redis.RefreshToken;
+import com.example.todoproject.redis.RefreshTokenRepository;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,13 +40,15 @@ public class JwtService {
     private Long refreshTokenExpirationPeriod;
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final LoginService loginService;
 
-    public TokenResponse toTokenResponse(String email) {
-        String accessToken = makeAccessToken(email);
+    public TokenResponse toTokenResponse(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("3번 후보"));
+        String accessToken = makeAccessToken(user.getEmail());
         String refreshToken = makeRefreshToken();
-        User user = userRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
-        user.updateRefreshToken(refreshToken);
+        refreshTokenRepository.save(new RefreshToken(userId, refreshToken));
         return new TokenResponse(accessToken, refreshToken);
     }
 
