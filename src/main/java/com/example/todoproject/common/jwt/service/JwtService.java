@@ -3,6 +3,7 @@ package com.example.todoproject.common.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.todoproject.common.dto.TokenResponse;
 import com.example.todoproject.common.login.LoginService;
 import com.example.todoproject.user.domain.User;
@@ -108,6 +109,8 @@ public class JwtService {
             JWT.require(Algorithm.HMAC512(secretKey))
                     .build().verify(headerToken);
             return true;
+        } catch (TokenExpiredException e) {
+            throw new IllegalArgumentException("토큰이 만료 되었습니다.");
         } catch (JWTVerificationException e) {
             return false;
         }

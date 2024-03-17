@@ -2,9 +2,12 @@ package com.example.todoproject.user.controller;
 
 import com.example.todoproject.common.dto.CommonResponse;
 import com.example.todoproject.common.dto.TokenResponse;
+import com.example.todoproject.todo.dto.RefreshToken;
 import com.example.todoproject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,5 +23,10 @@ public class UserController {
     public CommonResponse<TokenResponse> issueToken(@RequestParam(value = "token") String token) {
         TokenResponse tokenResponse = userService.issueToken(token);
         return new CommonResponse<>(tokenResponse);
+    }
+
+    @PostMapping("/refreshToken")
+    public CommonResponse<TokenResponse> reIssueToken(@RequestBody RefreshToken refreshToken) {
+        return new CommonResponse<>(userService.reIssueToken(refreshToken));
     }
 }
