@@ -33,12 +33,8 @@ public class User {
     private UserRole userRole;
 
     private String socialId;
-    private String refreshToken;
 
     @Column(name = "is_deleted")
     private boolean deleted;
 
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }
