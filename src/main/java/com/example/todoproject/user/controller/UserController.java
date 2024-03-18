@@ -2,7 +2,6 @@ package com.example.todoproject.user.controller;
 
 import com.example.todoproject.common.dto.CommonResponse;
 import com.example.todoproject.common.dto.TokenResponse;
-import com.example.todoproject.redis.RefreshTokenService;
 import com.example.todoproject.todo.dto.RefreshTokenDto;
 import com.example.todoproject.user.dto.MyPageDto;
 import com.example.todoproject.user.service.UserService;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/login")
     public CommonResponse<TokenResponse> issueToken(@RequestParam(value = "token") String token) {
@@ -32,7 +30,6 @@ public class UserController {
     @PostMapping("/refreshToken")
     public CommonResponse<TokenResponse> reIssueToken(@RequestBody RefreshTokenDto refreshTokenDto) {
         TokenResponse tokenResponse = userService.reIssueToken(refreshTokenDto);
-        refreshTokenService.removeRefreshToken(refreshTokenDto.value());
         return new CommonResponse<>(tokenResponse);
     }
 
