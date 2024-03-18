@@ -43,12 +43,12 @@ public class JwtService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final LoginService loginService;
 
-    public TokenResponse toTokenResponse(Long userId) {
-        User user = userRepository.findById(userId)
+    public TokenResponse toTokenResponse(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("3번 후보"));
         String accessToken = makeAccessToken(user.getEmail());
         String refreshToken = makeRefreshToken();
-        refreshTokenRepository.save(new RefreshToken(userId, refreshToken));
+        refreshTokenRepository.save(new RefreshToken(user.getEmail(), refreshToken));
         return new TokenResponse(accessToken, refreshToken);
     }
 

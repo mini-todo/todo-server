@@ -1,4 +1,4 @@
-package com.example.todoproject.redis;
+package com.example.todoproject.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -17,18 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final JwtService jwtService;
-    private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
     public TokenResponse issueToken(String token) {
         String email = jwtService.extractEmail(token);
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("1번 후보"));
-        return jwtService.toTokenResponse(user.getId());
+        return jwtService.toTokenResponse(email);
     }
 
     public TokenResponse reIssueToken(RefreshTokenDto refreshTokenDto) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenDto.value())
                 .orElseThrow(() -> new IllegalArgumentException("2번 후보"));
-        return jwtService.toTokenResponse(refreshToken.getUserId());
+        return jwtService.toTokenResponse(refreshToken.getEmail());
     }
 }
