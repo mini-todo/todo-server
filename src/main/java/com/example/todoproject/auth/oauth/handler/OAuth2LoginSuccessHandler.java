@@ -1,8 +1,7 @@
-package com.example.todoproject.common.oauth.handler;
+package com.example.todoproject.auth.oauth.handler;
 
-import com.example.todoproject.common.jwt.service.JwtService;
-import com.example.todoproject.common.oauth.CustomOAuth2User;
-import jakarta.servlet.ServletException;
+import com.example.todoproject.auth.jwt.service.JwtService;
+import com.example.todoproject.auth.oauth.CustomOAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.example.todoproject.common.oauth.googleuser;
+package com.example.todoproject.auth.oauth.googleuser;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

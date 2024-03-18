@@ -1,4 +1,4 @@
-package com.example.todoproject.common.config;
+package com.example.todoproject.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

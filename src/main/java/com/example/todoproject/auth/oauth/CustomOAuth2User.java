@@ -1,4 +1,4 @@
-package com.example.todoproject.common.oauth;
+package com.example.todoproject.auth.oauth;
 
 import com.example.todoproject.user.domain.UserRole;
 import java.util.Collection;

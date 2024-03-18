@@ -1,13 +1,13 @@
-package com.example.todoproject.common.config;
+package com.example.todoproject.config;
 
-import com.example.todoproject.common.jwt.error.JwtAccessDeniedHandler;
-import com.example.todoproject.common.jwt.error.JwtAuthenticationEntryPoint;
-import com.example.todoproject.common.jwt.filter.JwtAuthenticationProcessingFilter;
-import com.example.todoproject.common.jwt.service.JwtService;
-import com.example.todoproject.common.login.LoginService;
-import com.example.todoproject.common.oauth.handler.OAuth2LoginFailureHandler;
-import com.example.todoproject.common.oauth.handler.OAuth2LoginSuccessHandler;
-import com.example.todoproject.common.oauth.service.CustomOAuth2UserService;
+import com.example.todoproject.auth.jwt.error.JwtAccessDeniedHandler;
+import com.example.todoproject.auth.jwt.error.JwtAuthenticationEntryPoint;
+import com.example.todoproject.auth.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.example.todoproject.auth.jwt.service.JwtService;
+import com.example.todoproject.auth.login.LoginService;
+import com.example.todoproject.auth.oauth.handler.OAuth2LoginFailureHandler;
+import com.example.todoproject.auth.oauth.handler.OAuth2LoginSuccessHandler;
+import com.example.todoproject.auth.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

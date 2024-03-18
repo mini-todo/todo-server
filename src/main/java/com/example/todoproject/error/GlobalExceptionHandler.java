@@ -1,4 +1,4 @@
-package com.example.todoproject.common.error;
+package com.example.todoproject.error;
 
 import com.example.todoproject.common.dto.CustomProblemDetail;
 import java.util.Map;

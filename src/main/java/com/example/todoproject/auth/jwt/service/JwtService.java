@@ -1,19 +1,19 @@
-package com.example.todoproject.common.jwt.service;
+package com.example.todoproject.auth.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.todoproject.common.dto.TokenResponse;
-import com.example.todoproject.common.login.LoginService;
-import com.example.todoproject.redis.RefreshToken;
-import com.example.todoproject.redis.RefreshTokenRepository;
+import com.example.todoproject.auth.login.LoginService;
+import com.example.todoproject.event.RefreshTokenEvent;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
@@ -40,7 +40,7 @@ public class JwtService {
     private Long refreshTokenExpirationPeriod;
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final ApplicationEventPublisher publisher;
     private final LoginService loginService;
 
     public TokenResponse toTokenResponse(String email) {
@@ -48,7 +48,7 @@ public class JwtService {
                 .orElseThrow(() -> new IllegalArgumentException("3번 후보"));
         String accessToken = makeAccessToken(user.getEmail());
         String refreshToken = makeRefreshToken();
-        refreshTokenRepository.save(new RefreshToken(user.getEmail(), refreshToken));
+        publisher.publishEvent(new RefreshTokenEvent(user.getEmail(), refreshToken));
         return new TokenResponse(accessToken, refreshToken);
     }
 

@@ -1,4 +1,4 @@
-package com.example.todoproject.common.jwt.error;
+package com.example.todoproject.auth.jwt.error;
 
 import com.example.todoproject.common.dto.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,26 +9,26 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     private final ObjectMapper objectMapper;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
-                         AuthenticationException authException) throws IOException {
+    public void handle(HttpServletRequest request, HttpServletResponse response,
+                       AccessDeniedException accessDeniedException) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
 
         ErrorResponse errorResponse = ErrorResponse.fromStatusAndMessage(
-                HttpStatus.UNAUTHORIZED,
-                "인증에 실패했습니다."
+                HttpStatus.FORBIDDEN,
+                "올바르지 않은 토큰 입니다."
         );
 
         Map<String, ErrorResponse> map = Map.of("error", errorResponse);

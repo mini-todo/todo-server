@@ -1,8 +1,8 @@
-package com.example.todoproject.common.oauth.service;
+package com.example.todoproject.auth.oauth.service;
 
-import com.example.todoproject.common.oauth.CustomOAuth2User;
-import com.example.todoproject.common.oauth.OAuthAttributes;
-import com.example.todoproject.common.oauth.googleuser.GoogleOAuth2UserInfo;
+import com.example.todoproject.auth.oauth.CustomOAuth2User;
+import com.example.todoproject.auth.oauth.OAuthAttributes;
+import com.example.todoproject.auth.oauth.googleuser.GoogleOAuth2UserInfo;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.repository.UserRepository;
 import java.util.Collections;

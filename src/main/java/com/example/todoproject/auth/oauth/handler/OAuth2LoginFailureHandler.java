@@ -1,8 +1,7 @@
-package com.example.todoproject.common.oauth.handler;
+package com.example.todoproject.auth.oauth.handler;
 
 import com.example.todoproject.common.dto.CustomProblemDetail;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

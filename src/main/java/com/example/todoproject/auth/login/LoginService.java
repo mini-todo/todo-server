@@ -1,4 +1,4 @@
-package com.example.todoproject.common.login;
+package com.example.todoproject.auth.login;
 
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.repository.UserRepository;

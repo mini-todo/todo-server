@@ -1,7 +1,5 @@
 package com.example.todoproject.userservice;
 
-import com.example.todoproject.common.jwt.service.JwtService;
-import com.example.todoproject.redis.RefreshTokenRepository;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.domain.UserRole;
 import com.example.todoproject.user.dto.MyPageDto;
@@ -18,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceTest {
 
     @Autowired private UserRepository userRepository;
-    @Autowired private RefreshTokenRepository refreshTokenRepository;
-    @Autowired private JwtService jwtService;
 
     @Autowired private UserService userService;
 

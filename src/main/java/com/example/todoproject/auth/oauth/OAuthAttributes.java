@@ -1,6 +1,6 @@
-package com.example.todoproject.common.oauth;
+package com.example.todoproject.auth.oauth;
 
-import com.example.todoproject.common.oauth.googleuser.GoogleOAuth2UserInfo;
+import com.example.todoproject.auth.oauth.googleuser.GoogleOAuth2UserInfo;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.domain.UserRole;
 

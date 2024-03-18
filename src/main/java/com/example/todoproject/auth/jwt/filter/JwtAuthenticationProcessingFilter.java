@@ -1,6 +1,6 @@
-package com.example.todoproject.common.jwt.filter;
+package com.example.todoproject.auth.jwt.filter;
 
-import com.example.todoproject.common.jwt.service.JwtService;
+import com.example.todoproject.auth.jwt.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
