@@ -1,9 +1,12 @@
 package com.example.todoproject.user.controller;
 
 import com.example.todoproject.common.dto.CommonResponse;
+import com.example.todoproject.common.dto.EmptyDto;
 import com.example.todoproject.common.dto.TokenResponse;
+import com.example.todoproject.redis.RefreshTokenRepository;
 import com.example.todoproject.todo.dto.RefreshTokenDto;
 import com.example.todoproject.user.dto.MyPageDto;
+import com.example.todoproject.user.dto.RedisDto;
 import com.example.todoproject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,5 +43,11 @@ public class UserController {
 
     private String getUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    @PostMapping("/save/token")
+    public CommonResponse<EmptyDto> saveToken(@RequestBody RedisDto redisDto) {
+        userService.issue(redisDto);
+        return new CommonResponse<>(new EmptyDto());
     }
 }
