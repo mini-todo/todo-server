@@ -7,6 +7,7 @@ import com.example.todoproject.redis.RefreshTokenRepository;
 import com.example.todoproject.todo.dto.RefreshTokenDto;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.dto.MyPageDto;
+import com.example.todoproject.user.dto.RedisDto;
 import com.example.todoproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,11 @@ public class UserService {
     public TokenResponse issueToken(String token) {
         String email = jwtService.extractEmail(token);
         return jwtService.toTokenResponse(email);
+    }
+
+    @Transactional
+    public TokenResponse issue(RedisDto redisDto) {
+        return jwtService.toTokenResponse(redisDto.email());
     }
 
     @Transactional
