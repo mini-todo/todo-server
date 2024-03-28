@@ -3,3 +3,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   profiles:
     include: secret
+  redis:
+    host: localhost
+    port: 6379
