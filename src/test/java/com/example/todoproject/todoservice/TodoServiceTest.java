@@ -29,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -38,10 +39,11 @@ public class TodoServiceTest {
     @Autowired private FixedTodoRepository fixedTodoRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private TodoRepository todoRepository;
+    @Autowired private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private final TodoService todoService = new TodoService(
-            todoRepository, fixedTodoRepository, userRepository, new TestTime()
+            todoRepository, fixedTodoRepository, userRepository, jdbcTemplate, new TestTime()
     );
 
     static String email = "test@example.com";

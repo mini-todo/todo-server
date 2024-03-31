@@ -14,15 +14,23 @@ import com.example.todoproject.todo.dto.TypeDto;
 import com.example.todoproject.todo.repository.FixedTodoRepository;
 import com.example.todoproject.todo.repository.TodoRepository;
 import com.example.todoproject.user.repository.UserRepository;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -31,15 +39,44 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final FixedTodoRepository fixedTodoRepository;
     private final UserRepository userRepository;
+    private final JdbcTemplate jdbcTemplate;
     private final Time time;
 
     @Scheduled(cron = "0 1 0 * * *")
     public void addFixedTodo() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         for (FixedTodo fixedTodo : allFixedTodo) {
             Todo todo = new Todo(fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId());
             todoRepository.save(todo);
         }
+        stopWatch.stop();
+        log.info("JPA 활용 메서드 소요시간 : " + stopWatch.prettyPrint());
+    }
+
+    @Scheduled(cron = "0 6 0 * * *")
+    public void addFixedTodo2() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
+        String sql = "insert into todo (content, date, type, user_id) values (?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setString(1, allFixedTodo.get(i).getContent());
+                ps.setDate(2, Date.valueOf(time.now()));
+                ps.setString(3, TodoType.DAILY.toString());
+                ps.setLong(4, allFixedTodo.get(i).getUserId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return allFixedTodo.size();
+            }
+        });
+        stopWatch.stop();
+        log.info("JDBC 활용 메서드 소요시간 : " + stopWatch.prettyPrint());
     }
 
     @Transactional
