@@ -42,7 +42,8 @@ public class TodoService {
     private final JdbcTemplate jdbcTemplate;
     private final Time time;
 
-    @Scheduled(cron = "0 1 0 * * *")
+    @Transactional
+    @Scheduled(cron = "0 12 0 * * *")
     public void addFixedTodo() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -55,7 +56,8 @@ public class TodoService {
         log.info("JPA 활용 메서드 소요시간 : " + stopWatch.prettyPrint());
     }
 
-    @Scheduled(cron = "0 6 0 * * *")
+    @Transactional
+    @Scheduled(cron = "0 15 0 * * *")
     public void addFixedTodo2() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
