@@ -44,6 +44,7 @@ public class Todo {
     }
 
     public void update(TodoUpdateRequest request, LocalDate localDate) {
+        this.title = request.title();
         this.content = request.content();
         this.date = localDate;
         this.type = request.type();
@@ -54,6 +55,6 @@ public class Todo {
     }
 
     public void check() {
-        this.checked = true;
+        this.checked = !checked;
     }
 }
