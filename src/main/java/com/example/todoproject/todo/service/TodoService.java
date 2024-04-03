@@ -4,7 +4,6 @@ import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
 import com.example.todoproject.todo.domain.TodoType;
-import com.example.todoproject.todo.dto.FixedTodoDto;
 import com.example.todoproject.todo.dto.TodoCreateRequest;
 import com.example.todoproject.todo.dto.TodoDailyResponse;
 import com.example.todoproject.todo.dto.TodoListResponse;
@@ -49,7 +48,7 @@ public class TodoService {
         stopWatch.start();
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         for (FixedTodo fixedTodo : allFixedTodo) {
-            Todo todo = new Todo(fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId());
+            Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId(), true);
             todoRepository.save(todo);
         }
         stopWatch.stop();
@@ -83,8 +82,19 @@ public class TodoService {
 
     @Transactional
     public TodoResponse createTodo(TodoCreateRequest request, String email) {
-        Todo todo = new Todo(request.content(), toDateInfo(request.date()), request.type(), getUserId(email));
-        return new TodoResponse(todoRepository.save(todo).getId());
+        if (!request.isFixed()) {
+            Todo todo = new Todo(
+                    request.title(),
+                    request.content(),
+                    toDateInfo(request.date()),
+                    request.type(),
+                    getUserId(email),
+                    false);
+            return new TodoResponse(todoRepository.save(todo).getId());
+        } else {
+            FixedTodo fixedTodo = new FixedTodo(request.title(), request.content(), getUserId(email));
+            return new TodoResponse(fixedTodoRepository.save(fixedTodo).getId());
+        }
     }
 
     public TodoListResponse getTodoList(String email) {
@@ -94,7 +104,7 @@ public class TodoService {
         }
 
         List<TodoDailyResponse> myTodoList = myTodo.stream()
-                .map(it -> new TodoDailyResponse(it.getId(), it.getContent(), it.getDate()))
+                .map(it -> new TodoDailyResponse(it.getId(),it.getTitle(), it.getContent(), it.getDate(), it.isChecked(), it.isFixed(), it.getType()))
                 .toList();
         return new TodoListResponse(myTodoList);
     }
@@ -102,7 +112,7 @@ public class TodoService {
     public TodoDailyResponse getTodoDetail(String email, Long todoId) {
         Todo todo = todoRepository.findByUserIdAndId(getUserId(email), todoId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 할일을 찾을 수 없습니다."));
-        return new TodoDailyResponse(todo.getId(), todo.getContent(), todo.getDate());
+        return new TodoDailyResponse(todo.getId(),todo.getTitle(), todo.getContent(), todo.getDate(), todo.isChecked(), todo.isFixed(), todo.getType());
     }
 
     @Transactional
@@ -118,14 +128,18 @@ public class TodoService {
     }
 
     @Transactional
-    public void deleteTodo(Long todoId) {
-        todoRepository.deleteById(todoId);
+    public void checkTodo(Long todoId, String userName) {
+        Todo todo = getTodo(todoId);
+        Long userId = getUserId(userName);
+        if (!todo.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("본인이 아닙니다.");
+        }
+        todo.check();
     }
 
     @Transactional
-    public void createFixedTodo(String email, FixedTodoDto dto) {
-        FixedTodo fixedTodo = new FixedTodo(dto.content(), getUserId(email));
-        fixedTodoRepository.save(fixedTodo);
+    public void deleteTodo(Long todoId) {
+        todoRepository.deleteById(todoId);
     }
 
     @Transactional
@@ -150,5 +164,4 @@ public class TodoService {
                 .toList();
         return LocalDate.of(dateInfo.get(0), dateInfo.get(1), dateInfo.get(2));
     }
-
 }

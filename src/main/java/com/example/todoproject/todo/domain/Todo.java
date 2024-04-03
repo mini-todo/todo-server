@@ -22,22 +22,29 @@ public class Todo {
     @Column(name = "todo_id")
     private Long id;
 
+    private String title;
     private String content;
     private LocalDate date;
+    private boolean checked;
+    private boolean isFixed;
 
     @Enumerated(EnumType.STRING)
     private TodoType type;
 
     private Long userId;
 
-    public Todo(String content, LocalDate date, TodoType type, Long userId) {
+    public Todo(String title, String content, LocalDate date, TodoType type, Long userId, boolean isFixed) {
+        this.title = title;
         this.content = content;
         this.date = date;
         this.type = type;
+        this.checked = false;
+        this.isFixed = isFixed;
         this.userId = userId;
     }
 
     public void update(TodoUpdateRequest request, LocalDate localDate) {
+        this.title = request.title();
         this.content = request.content();
         this.date = localDate;
         this.type = request.type();
@@ -45,5 +52,9 @@ public class Todo {
 
     public void updateType(TodoType type) {
         this.type = type;
+    }
+
+    public void check() {
+        this.checked = !checked;
     }
 }
