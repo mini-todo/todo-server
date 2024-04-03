@@ -5,10 +5,13 @@ import jakarta.validation.constraints.NotNull;
 
 public record TodoCreateRequest(
         @NotNull
+        String title,
+        @NotNull
         String content,
         @NotNull
         String date,
         @NotNull
-        TodoType type
+        TodoType type,
+        boolean isFixed
 ) {
 }

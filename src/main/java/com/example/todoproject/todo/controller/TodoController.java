@@ -2,7 +2,6 @@ package com.example.todoproject.todo.controller;
 
 import com.example.todoproject.common.dto.CommonResponse;
 import com.example.todoproject.common.dto.EmptyDto;
-import com.example.todoproject.todo.dto.FixedTodoDto;
 import com.example.todoproject.todo.dto.TodoCreateRequest;
 import com.example.todoproject.todo.dto.TodoDailyResponse;
 import com.example.todoproject.todo.dto.TodoListResponse;
@@ -31,6 +30,12 @@ public class TodoController {
     @PostMapping
     public CommonResponse<TodoResponse> createTodo(@RequestBody TodoCreateRequest todoCreateRequest) {
         return new CommonResponse<>(todoService.createTodo(todoCreateRequest, getUserName()));
+    }
+
+    @PatchMapping("/check/{todoId}")
+    public CommonResponse<EmptyDto> checkTodo(@PathVariable("todoId") Long todoId) {
+        todoService.checkTodo(todoId, getUserName());
+        return new CommonResponse<>(new EmptyDto());
     }
 
     @GetMapping("/daily")
@@ -63,12 +68,6 @@ public class TodoController {
     @DeleteMapping("/{todoId}")
     public CommonResponse<EmptyDto> deleteTodo(@PathVariable("todoId") Long todoId) {
         todoService.deleteTodo(todoId);
-        return new CommonResponse<>(new EmptyDto());
-    }
-
-    @PostMapping("/fixed")
-    public CommonResponse<EmptyDto> createFixedTodo(@RequestBody FixedTodoDto dto) {
-        todoService.createFixedTodo(getUserName(), dto);
         return new CommonResponse<>(new EmptyDto());
     }
 

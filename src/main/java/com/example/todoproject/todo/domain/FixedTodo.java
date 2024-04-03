@@ -18,10 +18,12 @@ public class FixedTodo {
     @Column(name = "fixed_todo_id")
     private Long id;
 
+    private String title;
     private String content;
     private Long userId;
 
-    public FixedTodo(String content, Long userId) {
+    public FixedTodo(String title, String content, Long userId) {
+        this.title = title;
         this.content = content;
         this.userId = userId;
     }
