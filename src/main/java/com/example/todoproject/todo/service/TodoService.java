@@ -42,7 +42,7 @@ public class TodoService {
     private final Time time;
 
     @Transactional
-    @Scheduled(cron = "0 12 0 * * *")
+    @Scheduled(cron = "0 1 0 * * *")
     public void addFixedTodo() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -56,12 +56,12 @@ public class TodoService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 15 0 * * *")
+    @Scheduled(cron = "0 3 0 * * *")
     public void addFixedTodo2() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
-        String sql = "insert into todo (content, date, type, user_id) values (?, ?, ?, ?)";
+        String sql = "insert into todo (content, date, type, user_id, checked, is_fixed, title) values (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -69,6 +69,10 @@ public class TodoService {
                 ps.setDate(2, Date.valueOf(time.now()));
                 ps.setString(3, TodoType.DAILY.toString());
                 ps.setLong(4, allFixedTodo.get(i).getUserId());
+                ps.setBoolean(5, false);
+                ps.setBoolean(6, false);
+                ps.setString(7, allFixedTodo.get(i).getTitle());
+
             }
 
             @Override
