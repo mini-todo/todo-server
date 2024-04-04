@@ -1,9 +1,7 @@
 package com.example.todoproject.user.controller;
 
 import com.example.todoproject.common.dto.CommonResponse;
-import com.example.todoproject.common.dto.EmptyDto;
 import com.example.todoproject.common.dto.TokenResponse;
-import com.example.todoproject.redis.RefreshTokenRepository;
 import com.example.todoproject.todo.dto.RefreshTokenDto;
 import com.example.todoproject.user.dto.MyPageDto;
 import com.example.todoproject.user.dto.RedisDto;
@@ -46,8 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/save/token")
-    public CommonResponse<EmptyDto> saveToken(@RequestBody RedisDto redisDto) {
-        userService.issue(redisDto);
-        return new CommonResponse<>(new EmptyDto());
+    public CommonResponse<TokenResponse> saveToken(@RequestBody RedisDto redisDto) {
+        return new CommonResponse<>(userService.issue(redisDto));
     }
 }
