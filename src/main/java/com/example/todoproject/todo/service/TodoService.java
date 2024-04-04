@@ -70,7 +70,7 @@ public class TodoService {
                 ps.setString(3, TodoType.DAILY.toString());
                 ps.setLong(4, allFixedTodo.get(i).getUserId());
                 ps.setBoolean(5, false);
-                ps.setBoolean(6, false);
+                ps.setBoolean(6, true);
                 ps.setString(7, allFixedTodo.get(i).getTitle());
 
             }
