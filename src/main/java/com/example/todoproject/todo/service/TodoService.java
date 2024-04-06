@@ -44,7 +44,7 @@ public class TodoService {
     @TimeTrace
     @Transactional
     @Scheduled(cron = "0 1 0 * * *")
-    public void addFixedTodo() {
+    public void addFixedTodoWithJPA() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         for (FixedTodo fixedTodo : allFixedTodo) {
             Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId(), true);
@@ -55,7 +55,7 @@ public class TodoService {
     @TimeTrace
     @Transactional
     @Scheduled(cron = "0 5 0 * * *")
-    public void addFixedTodo2() {
+    public void addFixedTodoWithJDBC_SQL() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         String sql = "insert into todo (content, date, type, user_id, checked, is_fixed, title) values (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
