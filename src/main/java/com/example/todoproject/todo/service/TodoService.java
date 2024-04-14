@@ -1,5 +1,6 @@
 package com.example.todoproject.todo.service;
 
+import com.example.todoproject.aop.TimeTrace;
 import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
@@ -27,7 +28,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 
 @Slf4j
 @Service
@@ -41,25 +41,21 @@ public class TodoService {
     private final JdbcTemplate jdbcTemplate;
     private final Time time;
 
+    @TimeTrace
     @Transactional
     @Scheduled(cron = "0 1 0 * * *")
-    public void addFixedTodo() {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
+    public void addFixedTodoWithJPA() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         for (FixedTodo fixedTodo : allFixedTodo) {
             Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId(), true);
             todoRepository.save(todo);
         }
-        stopWatch.stop();
-        log.info("JPA 활용 메서드 소요시간 : " + stopWatch.prettyPrint());
     }
 
+    @TimeTrace
     @Transactional
-    @Scheduled(cron = "0 3 0 * * *")
-    public void addFixedTodo2() {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
+    @Scheduled(cron = "0 5 0 * * *")
+    public void addFixedTodoWithJDBC_SQL() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         String sql = "insert into todo (content, date, type, user_id, checked, is_fixed, title) values (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
@@ -80,8 +76,6 @@ public class TodoService {
                 return allFixedTodo.size();
             }
         });
-        stopWatch.stop();
-        log.info("JDBC 활용 메서드 소요시간 : " + stopWatch.prettyPrint());
     }
 
     @Transactional
