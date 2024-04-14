@@ -162,4 +162,16 @@ public class TodoService {
                 .toList();
         return LocalDate.of(dateInfo.get(0), dateInfo.get(1), dateInfo.get(2));
     }
+
+    public TodoListResponse getFixedTodoList(String email) {
+        List<FixedTodo> myFixedTodo = fixedTodoRepository.findByUserId(getUserId(email));
+        if (myFixedTodo.isEmpty()) {
+            return new TodoListResponse(new ArrayList<>());
+        }
+
+        List<TodoDailyResponse> myTodoList = myFixedTodo.stream()
+                .map(it -> new TodoDailyResponse(it.getId(),it.getTitle(), it.getContent(), time.now(), false, true, TodoType.DAILY))
+                .toList();
+        return new TodoListResponse(myTodoList);
+    }
 }

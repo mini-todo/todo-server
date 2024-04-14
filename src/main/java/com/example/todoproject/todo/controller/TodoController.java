@@ -77,6 +77,12 @@ public class TodoController {
         return new CommonResponse<>(new EmptyDto());
     }
 
+    @GetMapping("/fixed")
+    public CommonResponse<TodoListResponse> getFixedTodoList() {
+        String email = getUserName();
+        return new CommonResponse<>(todoService.getFixedTodoList(email));
+    }
+
     private String getUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
