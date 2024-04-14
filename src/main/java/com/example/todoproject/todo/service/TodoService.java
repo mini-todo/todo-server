@@ -91,6 +91,14 @@ public class TodoService {
             return new TodoResponse(todoRepository.save(todo).getId());
         } else {
             FixedTodo fixedTodo = new FixedTodo(request.title(), request.content(), getUserId(email));
+            Todo todo = new Todo(
+                    request.title(),
+                    request.content(),
+                    time.now(),
+                    request.type(),
+                    getUserId(email),
+                    true);
+            todoRepository.save(todo);
             return new TodoResponse(fixedTodoRepository.save(fixedTodo).getId());
         }
     }
