@@ -2,6 +2,7 @@ package com.example.todoproject.todo.controller;
 
 import com.example.todoproject.common.dto.CommonResponse;
 import com.example.todoproject.common.dto.EmptyDto;
+import com.example.todoproject.todo.domain.TodoType;
 import com.example.todoproject.todo.dto.TodoCreateRequest;
 import com.example.todoproject.todo.dto.TodoDailyResponse;
 import com.example.todoproject.todo.dto.TodoListResponse;
@@ -40,12 +41,17 @@ public class TodoController {
 
     @GetMapping("/daily")
     public CommonResponse<TodoListResponse> getDailyTodoList() {
-        return new CommonResponse<>(todoService.getTodoList(getUserName()));
+        return new CommonResponse<>(todoService.getTodoList(getUserName(), TodoType.DAILY));
+    }
+
+    @GetMapping("/weekly")
+    public CommonResponse<TodoListResponse> getWeeklyTodoList() {
+        return new CommonResponse<>(todoService.getTodoList(getUserName(), TodoType.WEEKLY));
     }
 
     @GetMapping("/monthly")
     public CommonResponse<TodoListResponse> getMonthlyTodoList() {
-        return new CommonResponse<>(todoService.getTodoList(getUserName()));
+        return new CommonResponse<>(todoService.getTodoList(getUserName(), TodoType.MONTHLY));
     }
 
     @GetMapping("/{todoId}")
@@ -54,8 +60,8 @@ public class TodoController {
     }
 
     @PatchMapping("/{todoId}")
-    public CommonResponse<EmptyDto> updateTodo(@PathVariable("todoId") Long todoId, @RequestBody TodoUpdateRequest todoCreateRequest) {
-        todoService.updateTodo(todoId, todoCreateRequest);
+    public CommonResponse<EmptyDto> updateTodo(@PathVariable("todoId") Long todoId, @RequestBody TodoUpdateRequest updateRequest) {
+        todoService.updateTodo(todoId, updateRequest);
         return new CommonResponse<>(new EmptyDto());
     }
 
@@ -74,6 +80,18 @@ public class TodoController {
     @DeleteMapping("/fixed/{fixedTodoId}")
     public CommonResponse<EmptyDto> deleteFixedTodo(@PathVariable("fixedTodoId") Long fixedTodoId) {
         todoService.deleteFixedTodo(fixedTodoId);
+        return new CommonResponse<>(new EmptyDto());
+    }
+
+    @GetMapping("/fixed")
+    public CommonResponse<TodoListResponse> getFixedTodoList() {
+        String email = getUserName();
+        return new CommonResponse<>(todoService.getFixedTodoList(email));
+    }
+
+    @PatchMapping("/fixed/{fixedTodoId}")
+    public CommonResponse<EmptyDto> updateFixedTodo(@PathVariable("fixedTodoId") Long fixedTodoId, @RequestBody TodoUpdateRequest updateRequest) {
+        todoService.updateFixedTodo(fixedTodoId, updateRequest);
         return new CommonResponse<>(new EmptyDto());
     }
 

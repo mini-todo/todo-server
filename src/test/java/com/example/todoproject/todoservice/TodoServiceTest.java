@@ -72,7 +72,7 @@ public class TodoServiceTest {
         todoService.createTodo(request, email);
 
         // When
-        TodoListResponse response = todoService.getTodoList(email);
+        TodoListResponse response = todoService.getTodoList(email, TodoType.DAILY);
 
         // Then
         assertNotNull(response);
@@ -103,7 +103,7 @@ public class TodoServiceTest {
         // Given
         String email = "test@example.com";
         TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2023-12-25", TodoType.DAILY, false);
-        TodoResponse createdTodo = todoService.createTodo(request, email);
+        todoService.createTodo(request, email);
 
         // When & Then
         Assertions.assertThatThrownBy(() -> todoService.getTodoDetail(email, 0L))
@@ -134,7 +134,7 @@ public class TodoServiceTest {
         // Given
         String email = "test@example.com";
         TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2023-12-25", TodoType.DAILY, false);
-        TodoResponse createdTodo = todoService.createTodo(request, email);
+        todoService.createTodo(request, email);
         TodoUpdateRequest updateRequest = new TodoUpdateRequest("title", "update Todo", "2024-03-14", TodoType.DAILY);
 
         // When & Then
@@ -164,7 +164,7 @@ public class TodoServiceTest {
         // Given
         String email = "test@example.com";
         TodoCreateRequest createRequest = new TodoCreateRequest("title", "Test Todo", "2023-12-25", TodoType.DAILY, false);
-        TodoResponse createdTodo = todoService.createTodo(createRequest, email);
+        todoService.createTodo(createRequest, email);
         TypeDto typeDto = new TypeDto(TodoType.WEEKLY);
 
         // When & Then

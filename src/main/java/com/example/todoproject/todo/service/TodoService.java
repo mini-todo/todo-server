@@ -91,11 +91,19 @@ public class TodoService {
             return new TodoResponse(todoRepository.save(todo).getId());
         } else {
             FixedTodo fixedTodo = new FixedTodo(request.title(), request.content(), getUserId(email));
+            Todo todo = new Todo(
+                    request.title(),
+                    request.content(),
+                    time.now(),
+                    request.type(),
+                    getUserId(email),
+                    true);
+            todoRepository.save(todo);
             return new TodoResponse(fixedTodoRepository.save(fixedTodo).getId());
         }
     }
 
-    public TodoListResponse getTodoList(String email) {
+    public TodoListResponse getTodoList(String email, TodoType type) {
         List<Todo> myTodo = todoRepository.findAllByUserId(getUserId(email));
         if (myTodo.isEmpty()) {
             return new TodoListResponse(new ArrayList<>());
@@ -103,6 +111,19 @@ public class TodoService {
 
         List<TodoDailyResponse> myTodoList = myTodo.stream()
                 .map(it -> new TodoDailyResponse(it.getId(),it.getTitle(), it.getContent(), it.getDate(), it.isChecked(), it.isFixed(), it.getType()))
+                .filter(it -> it.type() == type)
+                .toList();
+        return new TodoListResponse(myTodoList);
+    }
+
+    public TodoListResponse getFixedTodoList(String email) {
+        List<FixedTodo> myFixedTodo = fixedTodoRepository.findByUserId(getUserId(email));
+        if (myFixedTodo.isEmpty()) {
+            return new TodoListResponse(new ArrayList<>());
+        }
+
+        List<TodoDailyResponse> myTodoList = myFixedTodo.stream()
+                .map(it -> new TodoDailyResponse(it.getId(),it.getTitle(), it.getContent(), time.now(), false, true, TodoType.DAILY))
                 .toList();
         return new TodoListResponse(myTodoList);
     }
@@ -123,6 +144,12 @@ public class TodoService {
     public void updateType(Long todoId, TypeDto typeDto) {
         Todo todo = getTodo(todoId);
         todo.updateType(typeDto.type());
+    }
+
+    @Transactional
+    public void updateFixedTodo(Long fixedTodoId, TodoUpdateRequest updateRequest) {
+        FixedTodo findFixedTodo = getFixedTodo(fixedTodoId);
+        findFixedTodo.update(updateRequest);
     }
 
     @Transactional
@@ -161,5 +188,10 @@ public class TodoService {
                 .map(Integer::parseInt)
                 .toList();
         return LocalDate.of(dateInfo.get(0), dateInfo.get(1), dateInfo.get(2));
+    }
+
+    private FixedTodo getFixedTodo(Long fixedTodoId) {
+        return fixedTodoRepository.findById(fixedTodoId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
