@@ -2,6 +2,7 @@ package com.example.todoproject.todo.controller;
 
 import com.example.todoproject.common.dto.CommonResponse;
 import com.example.todoproject.common.dto.EmptyDto;
+import com.example.todoproject.todo.domain.TodoType;
 import com.example.todoproject.todo.dto.TodoCreateRequest;
 import com.example.todoproject.todo.dto.TodoDailyResponse;
 import com.example.todoproject.todo.dto.TodoListResponse;
@@ -40,12 +41,17 @@ public class TodoController {
 
     @GetMapping("/daily")
     public CommonResponse<TodoListResponse> getDailyTodoList() {
-        return new CommonResponse<>(todoService.getTodoList(getUserName()));
+        return new CommonResponse<>(todoService.getTodoList(getUserName(), TodoType.DAILY));
+    }
+
+    @GetMapping("/weekly")
+    public CommonResponse<TodoListResponse> getWeeklyTodoList() {
+        return new CommonResponse<>(todoService.getTodoList(getUserName(), TodoType.WEEKLY));
     }
 
     @GetMapping("/monthly")
     public CommonResponse<TodoListResponse> getMonthlyTodoList() {
-        return new CommonResponse<>(todoService.getTodoList(getUserName()));
+        return new CommonResponse<>(todoService.getTodoList(getUserName(), TodoType.MONTHLY));
     }
 
     @GetMapping("/{todoId}")
