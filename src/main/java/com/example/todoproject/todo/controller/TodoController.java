@@ -54,8 +54,8 @@ public class TodoController {
     }
 
     @PatchMapping("/{todoId}")
-    public CommonResponse<EmptyDto> updateTodo(@PathVariable("todoId") Long todoId, @RequestBody TodoUpdateRequest todoCreateRequest) {
-        todoService.updateTodo(todoId, todoCreateRequest);
+    public CommonResponse<EmptyDto> updateTodo(@PathVariable("todoId") Long todoId, @RequestBody TodoUpdateRequest updateRequest) {
+        todoService.updateTodo(todoId, updateRequest);
         return new CommonResponse<>(new EmptyDto());
     }
 
@@ -81,6 +81,12 @@ public class TodoController {
     public CommonResponse<TodoListResponse> getFixedTodoList() {
         String email = getUserName();
         return new CommonResponse<>(todoService.getFixedTodoList(email));
+    }
+
+    @PatchMapping("/fixed/{fixedTodoId}")
+    public CommonResponse<EmptyDto> updateFixedTodo(@PathVariable("fixedTodoId") Long fixedTodoId, @RequestBody TodoUpdateRequest updateRequest) {
+        todoService.updateFixedTodo(fixedTodoId, updateRequest);
+        return new CommonResponse<>(new EmptyDto());
     }
 
     private String getUserName() {

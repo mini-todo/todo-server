@@ -182,4 +182,15 @@ public class TodoService {
                 .toList();
         return new TodoListResponse(myTodoList);
     }
+
+    @Transactional
+    public void updateFixedTodo(Long fixedTodoId, TodoUpdateRequest updateRequest) {
+        FixedTodo findFixedTodo = getFixedTodo(fixedTodoId);
+        findFixedTodo.update(updateRequest);
+    }
+
+    private FixedTodo getFixedTodo(Long fixedTodoId) {
+        return fixedTodoRepository.findById(fixedTodoId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }
