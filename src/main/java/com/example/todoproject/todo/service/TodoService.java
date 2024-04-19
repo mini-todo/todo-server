@@ -1,6 +1,6 @@
 package com.example.todoproject.todo.service;
 
-import com.example.todoproject.aop.TimeTrace;
+import com.example.todoproject.aop.timer.TimeTrace;
 import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
