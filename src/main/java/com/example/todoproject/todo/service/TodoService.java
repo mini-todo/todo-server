@@ -46,8 +46,9 @@ public class TodoService {
     @Scheduled(cron = "0 1 0 * * *")
     public void addFixedTodoWithJPA() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
+        LocalDate today = time.now();
         for (FixedTodo fixedTodo : allFixedTodo) {
-            Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId(), true);
+            Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), today, TodoType.DAILY, fixedTodo.getUserId(), true);
             todoRepository.save(todo);
         }
     }
@@ -57,12 +58,13 @@ public class TodoService {
     @Scheduled(cron = "0 5 0 * * *")
     public void addFixedTodoWithJDBC_SQL() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
+        Date today = Date.valueOf(time.now());
         String sql = "insert into todo (content, date, type, user_id, checked, is_fixed, title) values (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 ps.setString(1, allFixedTodo.get(i).getContent());
-                ps.setDate(2, Date.valueOf(time.now()));
+                ps.setDate(2, today);
                 ps.setString(3, TodoType.DAILY.toString());
                 ps.setLong(4, allFixedTodo.get(i).getUserId());
                 ps.setBoolean(5, false);
