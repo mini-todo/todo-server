@@ -106,6 +106,7 @@ public class TodoService {
     }
 
     public TodoListResponse getTodoList(String email, TodoType type) {
+        // TODO: 데일리 조회시 오늘자 투두가 아닌거도 나옴
         List<Todo> myTodo = todoRepository.findAllByUserId(getUserId(email));
         if (myTodo.isEmpty()) {
             return new TodoListResponse(new ArrayList<>());
@@ -156,6 +157,7 @@ public class TodoService {
 
     @Transactional
     public void checkTodo(Long todoId, String userName) {
+        // TODO: 쿼리 수정 필요
         Todo todo = getTodo(todoId);
         Long userId = getUserId(userName);
         if (!todo.getUserId().equals(userId)) {
@@ -175,6 +177,7 @@ public class TodoService {
     }
 
     private Long getUserId(String email) {
+        // TODO: 연관관계 주고 페치조인하는게 더 좋을 듯
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."))
                 .getId();
