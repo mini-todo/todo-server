@@ -1,6 +1,6 @@
 package com.example.todoproject.todo.service;
 
-import com.example.todoproject.aop.TimeTrace;
+import com.example.todoproject.aop.timer.TimeTrace;
 import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
@@ -46,8 +46,9 @@ public class TodoService {
     @Scheduled(cron = "0 1 0 * * *")
     public void addFixedTodoWithJPA() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
+        LocalDate today = time.now();
         for (FixedTodo fixedTodo : allFixedTodo) {
-            Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), time.now(), TodoType.DAILY, fixedTodo.getUserId(), true);
+            Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), today, TodoType.DAILY, fixedTodo.getUserId(), true);
             todoRepository.save(todo);
         }
     }
@@ -57,12 +58,13 @@ public class TodoService {
     @Scheduled(cron = "0 5 0 * * *")
     public void addFixedTodoWithJDBC_SQL() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
+        Date today = Date.valueOf(time.now());
         String sql = "insert into todo (content, date, type, user_id, checked, is_fixed, title) values (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 ps.setString(1, allFixedTodo.get(i).getContent());
-                ps.setDate(2, Date.valueOf(time.now()));
+                ps.setDate(2, today);
                 ps.setString(3, TodoType.DAILY.toString());
                 ps.setLong(4, allFixedTodo.get(i).getUserId());
                 ps.setBoolean(5, false);
@@ -104,6 +106,7 @@ public class TodoService {
     }
 
     public TodoListResponse getTodoList(String email, TodoType type) {
+        // TODO: 데일리 조회시 오늘자 투두가 아닌거도 나옴
         List<Todo> myTodo = todoRepository.findAllByUserId(getUserId(email));
         if (myTodo.isEmpty()) {
             return new TodoListResponse(new ArrayList<>());
@@ -154,6 +157,7 @@ public class TodoService {
 
     @Transactional
     public void checkTodo(Long todoId, String userName) {
+        // TODO: 쿼리 수정 필요
         Todo todo = getTodo(todoId);
         Long userId = getUserId(userName);
         if (!todo.getUserId().equals(userId)) {
@@ -173,6 +177,7 @@ public class TodoService {
     }
 
     private Long getUserId(String email) {
+        // TODO: 연관관계 주고 페치조인하는게 더 좋을 듯
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."))
                 .getId();

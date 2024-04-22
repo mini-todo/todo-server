@@ -1,4 +1,4 @@
-package com.example.todoproject.aop;
+package com.example.todoproject.aop.timer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,7 +14,7 @@ import org.springframework.util.StopWatch;
 @Component
 public class Timer {
 
-    @Pointcut("@annotation(com.example.todoproject.aop.TimeTrace)")
+    @Pointcut("@annotation(com.example.todoproject.aop.timer.TimeTrace)")
     private void timer(){}
 
     @Around("timer()")
