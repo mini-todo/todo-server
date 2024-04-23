@@ -22,3 +22,9 @@ server:
     access-log:
       enabled: true
   port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
