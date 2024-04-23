@@ -56,6 +56,8 @@ public class SecurityConfig {
                         authorize -> authorize
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .requestMatchers("/users/**").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
+                                .requestMatchers("/prometheus/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(it -> it
