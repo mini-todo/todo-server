@@ -17,14 +17,13 @@ public class LogAspect {
 
     private final LogTracer logTracer;
 
-    @Pointcut("execution(* com.example.todoproject..*Controller.*(..)) || "
-            + "execution(* com.example.todoproject..*Service.*(..)) || "
-            + "execution(* com.example.todoproject..*Repository.*(..))")
-    public void everyRequest() {
+    @Pointcut("execution(* com.example.todoproject..*Controller.*(..)) || execution(* com.example.todoproject..*Service.*(..)) || execution(* com.example.todoproject..*Repository.*(..))")
+    public void everyRequest() { }
 
-    }
+    @Pointcut("@annotation(com.example.todoproject.aop.logtrace.NoLogging)")
+    public void noLogging() { }
 
-    @Around("everyRequest()")
+    @Around("everyRequest() && !noLogging()")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
         TraceStatus status = null;
         boolean hasException = false;
