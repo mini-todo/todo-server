@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.example.todoproject.aop.logtrace.NoLogging;
 import com.example.todoproject.common.dto.TokenResponse;
 import com.example.todoproject.auth.login.LoginService;
 import com.example.todoproject.event.RefreshTokenEvent;
@@ -69,6 +70,7 @@ public class JwtService {
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
+    @NoLogging
     public String extractToken(HttpServletRequest request) {
         String header = request.getHeader(JWT_TOKEN);
         if (header != null) {
@@ -105,6 +107,7 @@ public class JwtService {
         }
     }
 
+    @NoLogging
     public boolean isTokenValid(String headerToken) {
         if (headerToken == null) {
             return false;
