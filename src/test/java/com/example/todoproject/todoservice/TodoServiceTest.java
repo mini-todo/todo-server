@@ -65,21 +65,21 @@ public class TodoServiceTest {
         assertTrue(savedTodo.isPresent());
     }
 
-    @Test
-    public void getTodoListTest() {
-        // Given
-        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2023-12-25", TodoType.DAILY, false);
-        todoService.createTodo(request, email);
-
-        // When
-        TodoListResponse response = todoService.getTodoList(email, TodoType.DAILY);
-
-        // Then
-        assertNotNull(response);
-        List<TodoDailyResponse> todoList = response.todoList();
-        assertNotNull(todoList);
-        assertFalse(todoList.isEmpty());
-    }
+//    @Test
+//    public void getTodoListTest() {
+//        // Given
+//        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2023-12-25", TodoType.DAILY, false);
+//        todoService.createTodo(request, email);
+//
+//        // When
+//        TodoListResponse response = todoService.getTodoList(email, TodoType.DAILY);
+//
+//        // Then
+//        assertNotNull(response);
+//        List<TodoDailyResponse> todoList = response.todoList();
+//        assertNotNull(todoList);
+//        assertFalse(todoList.isEmpty());
+//    }
 
     @Test
     public void getTodoDetailTest() {

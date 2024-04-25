@@ -106,8 +106,12 @@ public class TodoService {
     }
 
     public TodoListResponse getTodoList(String email, TodoType type) {
-        // TODO: 데일리 조회시 오늘자 투두가 아닌거도 나옴
-        List<Todo> myTodo = todoRepository.findAllByUserId(getUserId(email));
+        List<Todo> myTodo;
+        if (type ==TodoType.DAILY) {
+            myTodo = todoRepository.findAllDailyByUserIdAndAndDate(getUserId(email), time.now());
+        } else {
+            myTodo = todoRepository.findAllMonthlyByUserIdAndAndDate(getUserId(email), time.now());
+        }
         if (myTodo.isEmpty()) {
             return new TodoListResponse(new ArrayList<>());
         }
