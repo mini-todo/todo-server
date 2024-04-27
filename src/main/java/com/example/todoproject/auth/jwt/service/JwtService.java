@@ -50,7 +50,7 @@ public class JwtService {
         String accessToken = makeAccessToken(user.getEmail());
         String refreshToken = makeRefreshToken();
         publisher.publishEvent(new RefreshTokenEvent(user.getEmail(), refreshToken));
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken, user.getName());
     }
 
     private String makeAccessToken(String email) {
