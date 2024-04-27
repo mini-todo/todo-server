@@ -17,7 +17,10 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://3.36.153.201",
                         "http://3.36.153.201:8081",
                         "http://3.36.153.201:80",
-                        "http://3.36.153.201:9090"
+                        "http://3.36.153.201:9090",
+                        "https://jobava.online",
+                        "https://jobava.online:3000",
+                        "https://jobava.online"
                         )
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS" , "PATCH")
