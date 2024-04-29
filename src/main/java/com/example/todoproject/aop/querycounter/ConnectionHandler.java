@@ -25,7 +25,7 @@ public class ConnectionHandler implements InvocationHandler {
     private void logQueryCount(Method method) {
         if (method.getName().equals("close")) {
             warnTooManyQuery();
-            log.info("\n====== count : {} =======\n", counter.getCount());
+            log.info("====== 발생한 쿼리 수 : {} =======\n", counter.getCount());
         }
     }
 
@@ -37,7 +37,7 @@ public class ConnectionHandler implements InvocationHandler {
 
     private void warnTooManyQuery() {
         if (counter.isWarn()) {
-            log.warn("\n======= Too Many Query !!!! =======");
+            log.warn("======= Too Many Query !!!! =======");
         }
     }
 }

@@ -28,7 +28,7 @@ public class LogAspect {
         TraceStatus status = null;
         boolean hasException = false;
         try {
-            status = logTracer.begin(" Method Signature : " + joinPoint.getSignature().toString().replace("com.example.todoproject.", ""),
+            status = logTracer.begin(" Method : " + getKeySignature(joinPoint),
                     Arrays.deepToString(joinPoint.getArgs()));
             return joinPoint.proceed();
         } catch (Exception ex) {
@@ -38,6 +38,13 @@ public class LogAspect {
         } finally {
             if(!hasException) logTracer.end(status);
         }
+    }
+
+    private String getKeySignature(ProceedingJoinPoint joinPoint) {
+        String[] split = joinPoint.getSignature().toString().split("\\.");
+        int length = split.length;
+        String[] arr = Arrays.copyOfRange(split, length-3, length);
+        return arr[1] + "." + arr[2];
     }
 
 }

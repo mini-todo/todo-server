@@ -1,6 +1,5 @@
 package com.example.todoproject.todo.service;
 
-import com.example.todoproject.aop.timer.TimeTrace;
 import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
@@ -41,35 +40,22 @@ public class TodoService {
     private final JdbcTemplate jdbcTemplate;
     private final Time time;
 
-    @TimeTrace
     @Transactional
-    @Scheduled(cron = "0 1 0 * * *")
-    public void addFixedTodoWithJPA() {
-        List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
-        LocalDate today = time.now();
-        for (FixedTodo fixedTodo : allFixedTodo) {
-            Todo todo = new Todo(fixedTodo.getTitle(), fixedTodo.getContent(), today, TodoType.DAILY, fixedTodo.getUserId(), true);
-            todoRepository.save(todo);
-        }
-    }
-
-    @TimeTrace
-    @Transactional
-    @Scheduled(cron = "0 5 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void addFixedTodoWithJDBC_SQL() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         Date today = Date.valueOf(time.now());
-        String sql = "insert into todo (content, date, type, user_id, checked, is_fixed, title) values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into todo (title, content, date, checked, is_fixed, type, user_id) values (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setString(1, allFixedTodo.get(i).getContent());
-                ps.setDate(2, today);
-                ps.setString(3, TodoType.DAILY.toString());
-                ps.setLong(4, allFixedTodo.get(i).getUserId());
-                ps.setBoolean(5, false);
-                ps.setBoolean(6, true);
-                ps.setString(7, allFixedTodo.get(i).getTitle());
+                ps.setString(1, allFixedTodo.get(i).getTitle());
+                ps.setString(2, allFixedTodo.get(i).getContent());
+                ps.setDate(3, today);
+                ps.setBoolean(4, false);
+                ps.setBoolean(5, true);
+                ps.setString(6, TodoType.DAILY.toString());
+                ps.setLong(7, allFixedTodo.get(i).getUserId());
 
             }
 
@@ -112,6 +98,7 @@ public class TodoService {
         } else {
             myTodo = todoRepository.findAllMonthlyByUserIdAndAndDate(getUserId(email), time.now());
         }
+
         if (myTodo.isEmpty()) {
             return new TodoListResponse(new ArrayList<>());
         }
