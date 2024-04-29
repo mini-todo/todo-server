@@ -28,7 +28,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         ErrorResponse errorResponse = ErrorResponse.fromStatusAndMessage(
                 HttpStatus.UNAUTHORIZED,
-                "인증에 실패했습니다."
+                "토큰이 만료되었습니다."
         );
 
         Map<String, ErrorResponse> map = Map.of("error", errorResponse);

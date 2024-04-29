@@ -13,6 +13,7 @@ import com.example.todoproject.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtService {
@@ -117,10 +119,11 @@ public class JwtService {
                     .build().verify(headerToken);
             return true;
         } catch (TokenExpiredException e) {
-            throw new IllegalArgumentException("토큰이 만료 되었습니다.");
+            log.warn("토큰이 만료되었습니다.");
         } catch (JWTVerificationException e) {
-            return false;
+            log.warn("인증에 실패했습니다.");
         }
+        return false;
     }
 
     public String createTokenForOAuth2(String email) {
