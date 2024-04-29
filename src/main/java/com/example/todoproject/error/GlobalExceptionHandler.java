@@ -3,6 +3,7 @@ package com.example.todoproject.error;
 import com.example.todoproject.common.dto.CustomProblemDetail;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,6 +24,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request
     ) {
         HttpStatus statusCode = HttpStatus.BAD_REQUEST;
+        CustomProblemDetail body = CustomProblemDetail.forStatusAndDetail(statusCode, ex.getMessage());
+
+        return handleExceptionInternal(
+                ex,
+                body,
+                new HttpHeaders(),
+                statusCode,
+                request
+        );
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(
+            NotFoundException ex,
+            WebRequest request
+    ) {
+        HttpStatus statusCode = HttpStatus.NOT_FOUND;
         CustomProblemDetail body = CustomProblemDetail.forStatusAndDetail(statusCode, ex.getMessage());
 
         return handleExceptionInternal(
