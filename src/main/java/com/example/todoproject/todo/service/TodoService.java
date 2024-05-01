@@ -68,13 +68,14 @@ public class TodoService {
 
     @Transactional
     public TodoResponse createTodo(TodoCreateRequest request, String email) {
+        Long userId = getUserId(email);
         if (!request.isFixed()) {
             Todo todo = new Todo(
                     request.title(),
                     request.content(),
                     toDateInfo(request.date()),
                     request.type(),
-                    getUserId(email),
+                    userId,
                     false);
             return new TodoResponse(todoRepository.save(todo).getId());
         } else {
@@ -84,7 +85,7 @@ public class TodoService {
                     request.content(),
                     time.now(),
                     request.type(),
-                    getUserId(email),
+                    userId,
                     true);
             todoRepository.save(todo);
             return new TodoResponse(fixedTodoRepository.save(fixedTodo).getId());
