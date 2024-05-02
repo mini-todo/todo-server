@@ -93,12 +93,11 @@ public class TodoServiceTest {
         TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2024-03-16", TodoType.DAILY, true);
 
         //when
-        TodoResponse response = todoService.createTodo(request, email);
+        todoService.createTodo(request, email);
 
         //then
-        assertNotNull(response.id());
-        Optional<FixedTodo> savedTodo = fixedTodoRepository.findById(response.id());
-        assertTrue(savedTodo.isPresent());
+        List<FixedTodo> all = fixedTodoRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
     }
 
 //    @Test

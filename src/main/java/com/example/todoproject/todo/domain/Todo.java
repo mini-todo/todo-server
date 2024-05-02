@@ -27,16 +27,18 @@ public class Todo {
     private LocalDate date;
     private boolean checked;
     private boolean isFixed;
+    private String userEmail;
 
     @Enumerated(EnumType.STRING)
     private TodoType type;
 
     private Long userId;
 
-    public Todo(String title, String content, LocalDate date, TodoType type, Long userId, boolean isFixed) {
+    public Todo(String title, String content, LocalDate date, String userEmail, TodoType type, Long userId, boolean isFixed) {
         this.title = title;
         this.content = content;
         this.date = date;
+        this.userEmail = userEmail;
         this.type = type;
         this.checked = false;
         this.isFixed = isFixed;

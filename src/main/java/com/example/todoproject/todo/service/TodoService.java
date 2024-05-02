@@ -56,7 +56,6 @@ public class TodoService {
                 ps.setBoolean(5, true);
                 ps.setString(6, TodoType.DAILY.toString());
                 ps.setLong(7, allFixedTodo.get(i).getUserId());
-
             }
 
             @Override
@@ -69,27 +68,24 @@ public class TodoService {
     @Transactional
     public TodoResponse createTodo(TodoCreateRequest request, String email) {
         Long userId = getUserId(email);
-        if (!request.isFixed()) {
-            Todo todo = new Todo(
-                    request.title(),
-                    request.content(),
-                    toDateInfo(request.date()),
-                    request.type(),
-                    userId,
-                    false);
-            return new TodoResponse(todoRepository.save(todo).getId());
-        } else {
+        if (request.isFixed()) {
             FixedTodo fixedTodo = new FixedTodo(request.title(), request.content(), getUserId(email));
-            Todo todo = new Todo(
-                    request.title(),
-                    request.content(),
-                    time.now(),
-                    request.type(),
-                    userId,
-                    true);
-            todoRepository.save(todo);
-            return new TodoResponse(fixedTodoRepository.save(fixedTodo).getId());
+            fixedTodoRepository.save(fixedTodo);
+            return saveTodo(request, time.now(), email, userId, true);
         }
+        return saveTodo(request, toDateInfo(request.date()), email, userId, false);
+    }
+
+    private TodoResponse saveTodo(TodoCreateRequest request, LocalDate time, String email, Long userId, boolean isFixed) {
+        Todo todo = new Todo(
+                request.title(),
+                request.content(),
+                time,
+                email,
+                request.type(),
+                userId,
+                isFixed);
+        return new TodoResponse(todoRepository.save(todo).getId());
     }
 
     public TodoListResponse getTodoList(String email, TodoType type) {
@@ -149,10 +145,8 @@ public class TodoService {
 
     @Transactional
     public void checkTodo(Long todoId, String userName) {
-        // TODO: 쿼리 수정 필요
         Todo todo = getTodo(todoId);
-        Long userId = getUserId(userName);
-        if (!todo.getUserId().equals(userId)) {
+        if (!todo.getUserEmail().equals(userName)) {
             throw new IllegalArgumentException("본인이 아닙니다.");
         }
         todo.check();
@@ -169,7 +163,6 @@ public class TodoService {
     }
 
     private Long getUserId(String email) {
-        // TODO: 연관관계 주고 페치조인하는게 더 좋을 듯
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."))
                 .getId();
