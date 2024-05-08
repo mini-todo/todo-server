@@ -104,7 +104,7 @@ public class TodoServiceTest {
 //    @DisplayName("일간 투두 조회 테스트")
 //    void findAllDailyTodo() {
 //        //given
-//        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2024-03-16", TodoType.DAILY, false);
+//        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2024-05-16", TodoType.DAILY, false);
 //        todoService.createTodo(request, email);
 //        todoService.createTodo(request, email);
 //        todoService.createTodo(request, email);
@@ -138,7 +138,7 @@ public class TodoServiceTest {
         //given
 
         //when
-        TodoListResponse todoList = todoService.getTodoList(email, TodoType.MONTHLY);
+        TodoListResponse todoList = todoService.getTodoList(email, TodoType.DAILY);
 
         //then
         assertThat(todoList.todoList().size()).isEqualTo(0);

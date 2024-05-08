@@ -91,9 +91,9 @@ public class TodoService {
     public TodoListResponse getTodoList(String email, TodoType type) {
         List<Todo> myTodo;
         if (type ==TodoType.DAILY) {
-            myTodo = todoRepository.findAllDailyByUserIdAndAndDate(getUserId(email), time.now());
+            myTodo = todoRepository.findAllDailyByUserIdAndAndDate(getUserId(email), time.now(), type);
         } else {
-            myTodo = todoRepository.findAllMonthlyByUserIdAndAndDate(getUserId(email), time.now());
+            myTodo = todoRepository.findAllMonthlyByUserIdAndAndDate(getUserId(email), time.now(), type);
         }
 
         if (myTodo.isEmpty()) {
@@ -102,7 +102,6 @@ public class TodoService {
 
         List<TodoDailyResponse> myTodoList = myTodo.stream()
                 .map(it -> new TodoDailyResponse(it.getId(),it.getTitle(), it.getContent(), it.getDate(), it.isChecked(), it.isFixed(), it.getType()))
-                .filter(it -> it.type() == type)
                 .toList();
         return new TodoListResponse(myTodoList);
     }
