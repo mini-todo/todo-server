@@ -14,7 +14,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     Optional<Todo> findByUserIdAndId(Long userId, Long id);
 
     @Query("select t from Todo t where t.userId = :userId and MONTH(t.date) = MONTH(:date) and t.type = :type")
-    MonthlyByUserIdAndAndDate(@Param("userId") Long userId, @Param("date") LocalDate date, @Param("type") TodoType type);
+    List<Todo> findAllMonthlyByUserIdAndAndDate(@Param("userId") Long userId, @Param("date") LocalDate date, @Param("type") TodoType type);
 
     @Query("select t from Todo t where t.userId = :userId and t.date = :date and t.type = :type")
     List<Todo> findAllDailyByUserIdAndAndDate(@Param("userId") Long userId, @Param("date") LocalDate date, @Param("type") TodoType type);
