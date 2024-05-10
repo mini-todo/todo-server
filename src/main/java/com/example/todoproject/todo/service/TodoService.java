@@ -41,11 +41,11 @@ public class TodoService {
     private final Time time;
 
     @Transactional
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "5/10 36 12 * * *")
     public void addFixedTodoWithJDBC_SQL() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         Date today = Date.valueOf(time.now());
-        String sql = "insert into todo (title, content, date, checked, is_fixed, type, user_id) values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into todo (title, content, date, checked, is_fixed, user_email, type, user_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -54,8 +54,9 @@ public class TodoService {
                 ps.setDate(3, today);
                 ps.setBoolean(4, false);
                 ps.setBoolean(5, true);
-                ps.setString(6, TodoType.DAILY.toString());
-                ps.setLong(7, allFixedTodo.get(i).getUserId());
+                ps.setString(6, allFixedTodo.get(i).getUserEmail());
+                ps.setString(7, TodoType.DAILY.toString());
+                ps.setLong(8, allFixedTodo.get(i).getUserId());
             }
 
             @Override
@@ -69,7 +70,7 @@ public class TodoService {
     public TodoResponse createTodo(TodoCreateRequest request, String email) {
         Long userId = getUserId(email);
         if (request.isFixed()) {
-            FixedTodo fixedTodo = new FixedTodo(request.title(), request.content(), getUserId(email));
+            FixedTodo fixedTodo = new FixedTodo(request.title(), request.content(), getUserId(email), email);
             fixedTodoRepository.save(fixedTodo);
             return saveTodo(request, time.now(), email, userId, true);
         }
@@ -90,6 +91,7 @@ public class TodoService {
 
     public TodoListResponse getTodoList(String email, TodoType type) {
         List<Todo> myTodo;
+        System.out.println(time.now().toString());
         if (type ==TodoType.DAILY) {
             myTodo = todoRepository.findAllDailyByUserIdAndAndDate(getUserId(email), time.now(), type);
         } else {
