@@ -41,7 +41,7 @@ public class TodoService {
     private final Time time;
 
     @Transactional
-    @Scheduled(cron = "5/10 36 12 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void addFixedTodoWithJDBC_SQL() {
         List<FixedTodo> allFixedTodo = fixedTodoRepository.findAll();
         Date today = Date.valueOf(time.now());
