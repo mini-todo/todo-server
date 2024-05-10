@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.example.todoproject.common.time.Time;
 import com.example.todoproject.todo.domain.FixedTodo;
 import com.example.todoproject.todo.domain.Todo;
 import com.example.todoproject.todo.domain.TodoType;
@@ -20,7 +21,7 @@ import com.example.todoproject.todo.service.TodoService;
 import com.example.todoproject.user.domain.User;
 import com.example.todoproject.user.domain.UserRole;
 import com.example.todoproject.user.repository.UserRepository;
-import com.example.todoproject.util.TestTime;
+import com.example.todoproject.util.TestTime.TestConfig;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -29,22 +30,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
+@Import({TestConfig.class})
 public class TodoServiceTest {
 
-    @Autowired private FixedTodoRepository fixedTodoRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private TodoRepository todoRepository;
-    @Autowired private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private final TodoService todoService = new TodoService(
-            todoRepository, fixedTodoRepository, userRepository, jdbcTemplate, new TestTime()
-    );
+    @Autowired FixedTodoRepository fixedTodoRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired TodoRepository todoRepository;
+    @Autowired JdbcTemplate jdbcTemplate;
+    @Autowired Time time;
+    @Autowired TodoService todoService;
 
     static String email = "test@example.com";
 
@@ -58,9 +58,9 @@ public class TodoServiceTest {
     @DisplayName("고정 투두를 오늘의 투두에 저장")
     void addFixedTodoToTodo() {
         //given
-        FixedTodo fixedTodo = new FixedTodo("title", "content", 1L);
-        FixedTodo fixedTodo2 = new FixedTodo("title", "content", 1L);
-        FixedTodo fixedTodo3 = new FixedTodo("title", "content", 1L);
+        FixedTodo fixedTodo = new FixedTodo("title", "content", 1L, email);
+        FixedTodo fixedTodo2 = new FixedTodo("title", "content", 1L, email);
+        FixedTodo fixedTodo3 = new FixedTodo("title", "content", 1L, email);
         fixedTodoRepository.saveAll(List.of(fixedTodo3, fixedTodo2, fixedTodo));
 
         //when
@@ -100,37 +100,37 @@ public class TodoServiceTest {
         assertThat(all.size()).isEqualTo(1);
     }
 
-//    @Test
-//    @DisplayName("일간 투두 조회 테스트")
-//    void findAllDailyTodo() {
-//        //given
-//        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2024-05-16", TodoType.DAILY, false);
-//        todoService.createTodo(request, email);
-//        todoService.createTodo(request, email);
-//        todoService.createTodo(request, email);
-//
-//        //when
-//        TodoListResponse todoList = todoService.getTodoList(email, TodoType.DAILY);
-//
-//        //then
-//        assertThat(todoList.todoList().size()).isEqualTo(3);
-//    }
-//
-//    @Test
-//    @DisplayName("월간 조회 테스트")
-//    void findAllMonthlyTodo() {
-//        //given
-//        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2024-05-16", TodoType.MONTHLY, false);
-//        todoService.createTodo(request, email);
-//        todoService.createTodo(request, email);
-//        todoService.createTodo(request, email);
-//
-//        //when
-//        TodoListResponse todoList = todoService.getTodoList(email, TodoType.MONTHLY);
-//
-//        //then
-//        assertThat(todoList.todoList().size()).isEqualTo(3);
-//    }
+    @Test
+    @DisplayName("일간 투두 조회 테스트")
+    void findAllDailyTodo() {
+        //given
+        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2024-05-16", TodoType.DAILY, false);
+        todoService.createTodo(request, email);
+        todoService.createTodo(request, email);
+        todoService.createTodo(request, email);
+
+        //when
+        TodoListResponse todoList = todoService.getTodoList(email, TodoType.DAILY);
+
+        //then
+        assertThat(todoList.todoList().size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("월간 조회 테스트")
+    void findAllMonthlyTodo() {
+        //given
+        TodoCreateRequest request = new TodoCreateRequest("title", "Test Todo", "2024-05-16", TodoType.MONTHLY, false);
+        todoService.createTodo(request, email);
+        todoService.createTodo(request, email);
+        todoService.createTodo(request, email);
+
+        //when
+        TodoListResponse todoList = todoService.getTodoList(email, TodoType.MONTHLY);
+
+        //then
+        assertThat(todoList.todoList().size()).isEqualTo(3);
+    }
 
     @Test
     @DisplayName("투두 없는 조회 테스트")
@@ -251,5 +251,6 @@ public class TodoServiceTest {
         // Then
         assertThrows(IllegalArgumentException.class, () -> todoService.getTodoDetail(email, createdTodo.id()));
     }
+
 
 }

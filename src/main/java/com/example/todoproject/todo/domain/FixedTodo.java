@@ -22,11 +22,13 @@ public class FixedTodo {
     private String title;
     private String content;
     private Long userId;
+    private String userEmail;
 
-    public FixedTodo(String title, String content, Long userId) {
+    public FixedTodo(String title, String content, Long userId, String userEmail) {
         this.title = title;
         this.content = content;
         this.userId = userId;
+        this.userEmail = userEmail;
     }
 
     public void update(TodoUpdateRequest updateRequest) {

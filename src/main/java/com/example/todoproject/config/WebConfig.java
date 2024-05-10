@@ -19,9 +19,16 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://3.36.153.201:80",
                         "http://3.36.153.201:3000",
                         "http://3.36.153.201:9090",
+                        "http://15.165.82.117:8081",
+                        "http://15.165.82.117:3000",
+                        "http://15.165.82.117:80",
+                        "http://15.165.82.117:9090",
                         "https://jobava.online",
                         "https://jobava.online:3000",
-                        "http://jobava.online"
+                        "http://jobava.online",
+                        "http://ec2-15-165-82-117.ap-northeast-2.compute.amazonaws.com:3000",
+                        "http://ec2-15-165-82-117.ap-northeast-2.compute.amazonaws.com:8081",
+                        "http://ec2-15-165-82-117.ap-northeast-2.compute.amazonaws.com:3000"
                 )
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS" , "PATCH")
