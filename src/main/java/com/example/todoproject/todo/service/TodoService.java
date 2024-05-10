@@ -57,6 +57,7 @@ public class TodoService {
                 ps.setString(6, allFixedTodo.get(i).getUserEmail());
                 ps.setString(7, TodoType.DAILY.toString());
                 ps.setLong(8, allFixedTodo.get(i).getUserId());
+
             }
 
             @Override
