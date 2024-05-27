@@ -6,6 +6,8 @@ import com.example.todoproject.redis.RefreshToken;
 import com.example.todoproject.redis.RefreshTokenRepository;
 import com.example.todoproject.todo.dto.RefreshTokenDto;
 import com.example.todoproject.user.domain.User;
+import com.example.todoproject.user.domain.UserRole;
+import com.example.todoproject.user.dto.LoginRequest;
 import com.example.todoproject.user.dto.MyPageDto;
 import com.example.todoproject.user.dto.RedisDto;
 import com.example.todoproject.user.repository.UserRepository;
@@ -48,5 +50,19 @@ public class UserService {
     private User getUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+    }
+
+    @Transactional
+    public TokenResponse joinAndLogin(LoginRequest loginRequest) {
+        User user = new User(
+                loginRequest.name(),
+                loginRequest.email(),
+                loginRequest.profile(),
+                UserRole.USER,
+                loginRequest.providerId(),
+                false
+        );
+        User savedUser = userRepository.save(user);
+        return jwtService.toTokenResponse(savedUser.getEmail());
     }
 }

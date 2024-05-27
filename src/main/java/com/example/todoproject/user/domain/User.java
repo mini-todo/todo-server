@@ -28,6 +28,7 @@ public class User {
 
     private String name;
     private String email;
+    private String profile;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
@@ -37,4 +38,12 @@ public class User {
     @Column(name = "is_deleted")
     private boolean deleted;
 
+    public User(String name, String email, String profile, UserRole userRole, String socialId, boolean deleted) {
+        this.name = name;
+        this.email = email;
+        this.profile = profile;
+        this.userRole = userRole;
+        this.socialId = socialId;
+        this.deleted = deleted;
+    }
 }
