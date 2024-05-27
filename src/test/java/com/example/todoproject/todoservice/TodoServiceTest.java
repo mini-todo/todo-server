@@ -50,7 +50,7 @@ public class TodoServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        User user = new User(1L, "name", email, UserRole.USER, " ", false);
+        User user = new User(1L, "name", email,"profile", UserRole.USER, " ", false);
         userRepository.save(user);
     }
 

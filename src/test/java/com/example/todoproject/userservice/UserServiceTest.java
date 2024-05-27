@@ -21,7 +21,7 @@ public class UserServiceTest {
 
     @Test
     void getMyPageTest() {
-        User savedUSer = userRepository.save(new User(1L, "name", "email", UserRole.USER, " ", false));
+        User savedUSer = userRepository.save(new User(1L, "name","email", "profile", UserRole.USER, " ", false));
 
         MyPageDto myPage = userService.getMyPage(savedUSer.getEmail());
 
