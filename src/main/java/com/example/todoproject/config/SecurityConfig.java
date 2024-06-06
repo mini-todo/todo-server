@@ -59,6 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/prometheus/**").permitAll()
                                 .requestMatchers("/login/**").permitAll()
+                                .requestMatchers("/error/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(it -> it

@@ -8,20 +8,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(
-            IllegalArgumentException ex,
-            WebRequest request
+            IllegalArgumentException ex
     ) {
         HttpStatus statusCode = HttpStatus.BAD_REQUEST;
         CustomProblemDetail body = CustomProblemDetail.forStatusAndDetail(statusCode, ex.getMessage());
@@ -30,15 +29,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex,
                 body,
                 new HttpHeaders(),
-                statusCode,
-                request
+                statusCode
         );
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(
-            NotFoundException ex,
-            WebRequest request
+            NotFoundException ex
     ) {
         HttpStatus statusCode = HttpStatus.NOT_FOUND;
         CustomProblemDetail body = CustomProblemDetail.forStatusAndDetail(statusCode, ex.getMessage());
@@ -47,15 +44,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex,
                 body,
                 new HttpHeaders(),
-                statusCode,
-                request
+                statusCode
         );
     }
 
-    @ExceptionHandler
-    public ResponseEntity<Object> handleUnclassifiedException(
-            Exception ex,
-            WebRequest request
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Object> handleNPException(
+            NullPointerException ex
     ) {
         HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         CustomProblemDetail body = CustomProblemDetail.forStatusAndDetail(statusCode, ex.getMessage());
@@ -64,18 +59,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex,
                 body,
                 new HttpHeaders(),
-                statusCode,
-                request
+                statusCode
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handleUnclassifiedException(
+            Exception ex
+    ) {
+        HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        CustomProblemDetail body = CustomProblemDetail.forStatusAndDetail(statusCode, ex.getMessage());
+
+        return handleExceptionInternal(
+                ex,
+                body,
+                new HttpHeaders(),
+                statusCode
         );
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request
-    ) {
+    protected ResponseEntity<Object> handleMethodValidationException(MethodValidationException ex, HttpHeaders headers,
+                                                                     HttpStatus status, WebRequest request) {
         HttpStatus statusCode = HttpStatus.BAD_REQUEST;
         CustomProblemDetail body = CustomProblemDetail.forStatusAndDetail(statusCode, ex.getMessage());
 
@@ -83,15 +88,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex,
                 body,
                 new HttpHeaders(),
-                statusCode,
-                request
+                statusCode
         );
     }
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(
+    private ResponseEntity<Object> handleExceptionInternal(
             Exception ex, Object body, HttpHeaders headers,
-            HttpStatusCode statusCode, WebRequest request) {
+            HttpStatusCode statusCode) {
         if (statusCode.is5xxServerError()) {
             log.error(ex.getMessage());
         }
