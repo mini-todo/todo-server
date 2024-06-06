@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 .requestMatchers("/prometheus/**").permitAll()
                                 .requestMatchers("/login/**").permitAll()
                                 .requestMatchers("/error/**").permitAll()
+                                .requestMatchers("/metrics/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(it -> it
